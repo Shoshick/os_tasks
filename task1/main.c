@@ -6,7 +6,7 @@
 #include <sys/resource.h>
 
 #ifndef MAX_BUF
-#define MAX_BUF 200
+#define MAX_BUF 200 //
 #define _XOPEN_SOURCE_EXTENDED 1
 #endif
 
@@ -17,8 +17,6 @@ long newlimit;
 char path[MAX_BUF];
 char *name[20] = {0};
 char *new_val[20] = {0};
-int i, j, g;
-int flag;
 
 int main(int argc, char *argv[], char **envp)
 {
@@ -77,7 +75,7 @@ int main(int argc, char *argv[], char **envp)
             }
             break;
         case 'V':
-            for (flag = 0, g = 0, i = 0, j = 0; optarg[g] != '\0'; g++)
+            for (int g = 0, i = 0, j = 0, flag = 0; optarg[g] != '\0'; g++)
             {
                 if (optarg[g] == '=')
                 {
@@ -97,12 +95,12 @@ int main(int argc, char *argv[], char **envp)
             }
             setenv(name, new_val, 1);
             printf("A new environment variable has been added: ");
-            for (i = 0; name[i] != '\0'; i++)
+            for (int i = 0; name[i] != '\0'; i++)
             {
                 printf("%c", name[i]);
             }
             printf(" = ");
-            for (i = 0; new_val[i] != '\0'; i++)
+            for (int i = 0; new_val[i] != '\0'; i++)
             {
                 printf("%c", new_val[i]);
             }
@@ -113,4 +111,5 @@ int main(int argc, char *argv[], char **envp)
             break;
         }
     }
+    return 0;
 }
