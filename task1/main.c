@@ -8,6 +8,11 @@
 extern char *optarg;
 extern int optind, opterr, optopt;
 
+#ifndef MAX_BUF
+#define MAX_BUF 200 //USED ​​IN FUNCTION getcwd()
+#define _XOPEN_SOURCE_EXTENDED 1
+#endif
+
 long newlimit;
 char path[200];
 char *name[20] = {0};
@@ -54,7 +59,7 @@ int main(int argc, char *argv[], char **envp) {
       fprintf(stderr, "New core file size = %d bytes\n\n", RLIMIT_CORE);
       break;
     case 'd':
-      getcwd(path, 200);
+      getcwd(path, MAX_BUF);
       printf("Current working directory: %s\n\n", path);
       break;
     case 'v':
