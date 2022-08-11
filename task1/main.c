@@ -1,22 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/resource.h>
 #include <sys/types.h>
 #include <ulimit.h>
 #include <unistd.h>
 
+char *strsep(char **restrict stringp, const char *restrict delim);
+char *strdup(const char *s);
+
+
 extern char *optarg;
 extern int optind, opterr, optopt;
+extern char **environ;
 
 #ifndef MAX_BUF
-#define MAX_BUF 200 //USED ​​IN FUNCTION getcwd()
+#define MAX_BUF 200 // USED ​​IN FUNCTION getcwd()
 #define _XOPEN_SOURCE_EXTENDED 1
 #endif
-
-long newlimit;
-char path[200];
-char *name[20] = {0};
-char *new_val[20] = {0};
 
 int main(int argc, char *argv[], char **envp) {
   int rez = 0;
@@ -39,6 +40,7 @@ int main(int argc, char *argv[], char **envp) {
       printf("Ulimit value = %d\n\n", UL_GETFSIZE);
       break;
     case 'U':
+      long newlimit;
       fprintf(stderr, "Maximum file size = %ld\n", ulimit(UL_GETFSIZE));
       newlimit = atol(optarg);
       ulimit(UL_SETFSIZE, newlimit);
@@ -54,48 +56,39 @@ int main(int argc, char *argv[], char **envp) {
       break;
     case 'C':
       struct rlimit *cdlimit = malloc(sizeof(struct rlimit));
+      if (cdlimit == NULL){
+        printf("Ошибка, malloc вернул 0");
+        return 0;
+      }
       cdlimit->rlim_cur = atol(optarg);
       setrlimit(RLIMIT_CORE, cdlimit);
       fprintf(stderr, "New core file size = %d bytes\n\n", RLIMIT_CORE);
       break;
     case 'd':
+      char path[MAX_BUF];
       getcwd(path, MAX_BUF);
       printf("Current working directory: %s\n\n", path);
       break;
     case 'v':
-      for (char **env = envp; *env != 0; env++) {
-        char *thisEnv = *env;
-        printf("%s\n", thisEnv);
-      }
+      char **all_env_val = environ;
+      for (; *all_env_val; all_env_val++)
+        printf("%s\n", *all_env_val);
+      printf("\n");
       break;
     case 'V':
-      for (int g = 0, i = 0, j = 0, flag = 0; optarg[g] != '\0'; g++) {
-        if (optarg[g] == '=') {
-          flag = 1;
-          continue;
-        }
-        if (flag == 0) {
-          name[i] = optarg[g];
-          i += 1;
-        }
-        if (flag == 1) {
-          new_val[j] = optarg[g];
-          j += 1;
-        }
+      char *env_name;
+      char *env_val;
+      env_val = strdup(optarg);
+      if(env_val == NULL){
+        printf("Ошибка, malloc вернул 0");
+        return 0;
       }
-      setenv(name, new_val, 1);
-      printf("A new environment variable has been added: ");
-      for (int i = 0; name[i] != '\0'; i++) {
-        printf("%c", name[i]);
-      }
-      printf(" = ");
-      for (int i = 0; new_val[i] != '\0'; i++) {
-        printf("%c", new_val[i]);
-      }
-      printf("\n\n");
+      env_name = strsep(&env_val, "=");
+      setenv(env_name, env_val, 1);
+      printf("A new environment variable has been added: %s = %s\n\n", env_name, env_val);
       break;
     case '?':
-      printf("Error found !\n");
+      printf("Ошибка, введена некорректная опция !\n");
       break;
     }
   }
