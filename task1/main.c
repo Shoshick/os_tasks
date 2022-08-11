@@ -5,16 +5,11 @@
 #include <ulimit.h>
 #include <unistd.h>
 
-#ifndef MAX_BUF
-#define MAX_BUF 200 //
-#define _XOPEN_SOURCE_EXTENDED 1
-#endif
-
 extern char *optarg;
 extern int optind, opterr, optopt;
 
 long newlimit;
-char path[MAX_BUF];
+char path[200];
 char *name[20] = {0};
 char *new_val[20] = {0};
 
@@ -59,7 +54,7 @@ int main(int argc, char *argv[], char **envp) {
       fprintf(stderr, "New core file size = %d bytes\n\n", RLIMIT_CORE);
       break;
     case 'd':
-      getcwd(path, MAX_BUF);
+      getcwd(path, 200);
       printf("Current working directory: %s\n\n", path);
       break;
     case 'v':
