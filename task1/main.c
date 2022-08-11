@@ -6,10 +6,6 @@
 #include <ulimit.h>
 #include <unistd.h>
 
-char *strsep(char **restrict stringp, const char *restrict delim);
-char *strdup(const char *s);
-
-
 extern char *optarg;
 extern int optind, opterr, optopt;
 extern char **environ;
@@ -45,18 +41,13 @@ int main(int argc, char *argv[], char **envp) {
       newlimit = atol(optarg);
       ulimit(UL_SETFSIZE, newlimit);
       fprintf(stderr, "New maximum file size = %ld\n", ulimit(UL_GETFSIZE));
-      if (fork() == 0) {
-        execvp(optarg, &optarg);
-        perror(optarg);
-        exit(127);
-      }
       break;
     case 'c':
       printf("Core file size = %d bytes\n\n", RLIMIT_CORE);
       break;
     case 'C':
       struct rlimit *cdlimit = malloc(sizeof(struct rlimit));
-      if (cdlimit == NULL){
+      if (cdlimit == NULL) {
         printf("Ошибка, malloc вернул 0");
         return 0;
       }
@@ -80,13 +71,14 @@ int main(int argc, char *argv[], char **envp) {
       char *env_name;
       char *env_val;
       env_val = optarg;
-      if(env_val == NULL){
+      if (env_val == NULL) {
         printf("Ошибка, malloc вернул 0");
         return 0;
       }
       env_name = strsep(&env_val, "=");
       setenv(env_name, env_val, 1);
-      printf("A new environment variable has been added: %s = %s\n\n", env_name, env_val);
+      printf("A new environment variable has been added: %s = %s\n\n", env_name,
+             env_val);
       break;
     case '?':
       printf("Ошибка, введена некорректная опция !\n");
