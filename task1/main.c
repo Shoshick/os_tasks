@@ -63,6 +63,7 @@ int main(int argc, char *argv[], char **envp) {
       cdlimit->rlim_cur = atol(optarg);
       setrlimit(RLIMIT_CORE, cdlimit);
       fprintf(stderr, "New core file size = %d bytes\n\n", RLIMIT_CORE);
+      free(cdlimit);
       break;
     case 'd':
       char path[MAX_BUF];
@@ -78,7 +79,7 @@ int main(int argc, char *argv[], char **envp) {
     case 'V':
       char *env_name;
       char *env_val;
-      env_val = strdup(optarg);
+      env_val = optarg;
       if(env_val == NULL){
         printf("Ошибка, malloc вернул 0");
         return 0;
