@@ -2,16 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 #ifndef MAX_BUF
 #define MAX_BUF 999 // USED ​​IN FUNCTION fgets()
 #endif
 
-void freeing_memory(char** text, int size) {
-  for (int i = 0;i<size;i++){
+void freeing_memory(char **text, int size) {
+  for (int i = 0; i < size; i++) {
     free(text[i]);
   }
-free(text);
+  free(text);
 }
 
 int main() {
@@ -30,7 +29,7 @@ int main() {
       break;
     }
     lines_number += 1;
-    text = (char **)realloc(text, (i + 1)*sizeof(char));
+    text = (char **)realloc(text, (i + 1) * sizeof(char));
     len = strlen(buffer) + 1; //место для '\0'
     text[i] = (char *)malloc(len * sizeof(char));
     if (text[i] == NULL) {
