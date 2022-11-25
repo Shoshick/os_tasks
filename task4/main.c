@@ -6,7 +6,7 @@
 #define MAX_BUF 999 // USED ​​IN FUNCTION fgets()
 #endif
 
-void freeing_memory(char **text, int size) {
+void free_memory(char **text, int size) {
   for (int i = 0; i < size; i++) {
     free(text[i]);
   }
@@ -18,8 +18,8 @@ int main() {
   char **text;
   text = (char **)malloc(1 * sizeof(char *));
   if (text == NULL) {
-    perror("Error: ");
-    freeing_memory(text, lines_number);
+    perror("Error allocating memory");
+    free_memory(text, lines_number);
     return 1;
   }
   for (int i = 0;; i++) {
@@ -33,8 +33,8 @@ int main() {
     len = strlen(buffer) + 1; //место для '\0'
     text[i] = (char *)malloc(len * sizeof(char));
     if (text[i] == NULL) {
-      perror("Error: ");
-      freeing_memory(text, lines_number);
+      perror("Error allocating memory");
+      free_memory(text, lines_number);
       return 1;
     }
     strcpy(text[i], buffer);
@@ -42,6 +42,6 @@ int main() {
   for (int i = 0; i < lines_number; i++) {
     printf("%s", text[i]);
   }
-  freeing_memory(text, lines_number);
+  free_memory(text, lines_number);
   return 0;
 }
